@@ -1,6 +1,7 @@
 // src/pages/Login.js
 import React, { useState } from 'react';
 import { supabase } from '../supabaseClient';
+import { Link } from 'react-router-dom';  // Asegúrate de importar Link
 
 const Login = () => {
   const [email, setEmail] = useState('');

@@ -1,6 +1,7 @@
 // src/pages/Signup.js
 import React, { useState } from 'react';
 import { supabase } from '../supabaseClient';
+import { Link } from 'react-router-dom';  // Asegúrate de importar Link
 
 const Signup = () => {
   const [email, setEmail] = useState('');
@@ -23,8 +24,11 @@ const Signup = () => {
         rating: rating ? parseFloat(rating) : null,
       }
     });
-    if (error) console.error('Error signing up:', error.message);
-    else console.log('Signed up successfully');
+    if (error) {
+      console.error('Error signing up:', error.message);
+    } else {
+      console.log('Signed up successfully');
+    }
   };
 
   return (
