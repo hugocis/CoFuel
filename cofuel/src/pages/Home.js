@@ -1,26 +1,51 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Container } from '../styles/GradientBackground';
-import '../App.css';
+import styled, { keyframes } from 'styled-components';
+
+const gradientBackground = keyframes`
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+`;
+
+const HomeContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(135deg, #66ffcc, #ffcc66);
+  background-size: 200% 200%;
+  animation: ${gradientBackground} 10s ease infinite;
+  min-height: 100vh;
+  padding: 50px;
+`;
+
+const Title = styled.h1`
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  color: #333;
+`;
+
+const Button = styled.button`
+  width: 200px;
+  padding: 10px;
+  margin: 10px 0;
+  background: #ffcc66;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2em;
+  cursor: pointer;
+
+  &:hover {
+    background: #ffa500;
+  }
+`;
 
 const Home = () => {
   return (
-    <>
-      <nav className="navbar">
-        <Link to="/" className="nav-link">Home</Link>
-        <Link to="/more-about-us" className="nav-link">More About Us</Link>
-        <Link to="/info-about-project" className="nav-link">Info About the Project</Link>
-        <Link to="/links" className="nav-link">Links</Link>
-        <Link to="/login" className="nav-link" style={{ marginLeft: 'auto' }}>Login</Link>
-      </nav>
-      <Container className="container">
-        <h1 className="title">WHERE EVERY TRIP COUNTS <span className="title-green">COFUEL</span></h1>
-        <Link to="/create-account" className="button">Join the revolution</Link>
-      </Container>
-      <footer className="footer">
-        <p>&copy; 2024 Cofuel. All rights reserved.</p>
-      </footer>
-    </>
+    <HomeContainer>
+      <Title>Where Every Trip Counts</Title>
+      <Button>Create an account</Button>
+    </HomeContainer>
   );
 };
 
