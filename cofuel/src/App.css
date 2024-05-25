@@ -23,6 +23,7 @@ body, html {
   text-decoration: none;
   text-align: center;
   transition: background-color 0.3s ease;
+  border-radius: 15px; /* Bordes redondeados */
 }
 
 .nav-link:hover {
@@ -37,14 +38,12 @@ body, html {
   align-items: center;
   text-align: center;
   width: 100%;
-  height: calc(100vh - 120px); /* Resta la altura del navbar y footer */
-  padding-top: 60px; /* Añadir espacio para el navbar */
-  padding-bottom: 60px; /* Añadir espacio para el footer */
   color: black; /* Asegurar que el texto sea visible */
 }
 
 .title {
   font-size: 2rem;
+  color: black; /* Asegurar que el título sea visible */
 }
 
 .title-green {
@@ -103,12 +102,13 @@ body, html {
 
 .footer {
   width: 100%;
-  background-color: #2d6a4f; /* Verde oscuro */
+  background-color: #ffa500; /* Naranja */
   text-align: center;
   padding: 10px 0;
   position: fixed;
   bottom: 0;
   z-index: 1000;
+  color: white; /* Texto blanco */
 }
 
 .team {
