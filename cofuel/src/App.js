@@ -9,13 +9,11 @@ import Signup from './pages/Signup';
 import Profile from './pages/Profile'; 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import GlobalStyles from './styles/GlobalStyles';
 import MapPage from './pages/MapPage'; 
 
 function App() {
   return (
     <Router>
-      <GlobalStyles />
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
