@@ -1,7 +1,7 @@
-// src/pages/Signup.js
 import React, { useState } from 'react';
 import { supabase } from '../supabaseClient';
-import { Link } from 'react-router-dom';  // Asegúrate de importar Link
+import { Link } from 'react-router-dom';
+import '../App.css';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
@@ -32,50 +32,54 @@ const Signup = () => {
   };
 
   return (
-    <div className="signup">
-      <h2>Signup</h2>
-      <form onSubmit={handleSignup}>
+    <div className="container">
+      <div className="header">Signup</div>
+      <form className="form" onSubmit={handleSignup}>
         <input
           type="text"
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          className="input"
         />
         <input
           type="text"
           placeholder="Last name"
           value={lastName}
           onChange={(e) => setLastName(e.target.value)}
+          className="input"
         />
         <input
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          className="input"
         />
         <input
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          className="input"
         />
         <input
           type="date"
           placeholder="Date of Birth"
           value={dateOfBirth}
           onChange={(e) => setDateOfBirth(e.target.value)}
+          className="input"
         />
         <input
           type="text"
           placeholder="Rating"
           value={rating}
           onChange={(e) => setRating(e.target.value)}
+          className="input"
         />
-        <button type="submit">Sign up</button>
+        <button type="submit" className="button">Sign up</button>
       </form>
-      <button>
-        <Link to="/login">Login</Link>
-      </button>
+      <Link to="/login" className="link">Login</Link>
     </div>
   );
 };

@@ -1,7 +1,7 @@
-// src/pages/Login.js
 import React, { useState } from 'react';
 import { supabase } from '../supabaseClient';
-import { Link } from 'react-router-dom';  // Asegúrate de importar Link
+import { Link } from 'react-router-dom';
+import '../App.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -15,27 +15,26 @@ const Login = () => {
   };
 
   return (
-    <div className="login">
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
+    <div className="container">
+      <div className="header">Login</div>
+      <form className="form" onSubmit={handleLogin}>
         <input
           type="email"
           placeholder="Type your email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          className="input"
         />
         <input
           type="password"
           placeholder="Type your password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          className="input"
         />
-        <button type="submit">Login</button>
+        <button type="submit" className="button">Login</button>
       </form>
-      <p>Forgot password?</p>
-      <button>
-        <Link to="/signup">Signup</Link>
-      </button>
+      <Link to="/signup" className="link">Signup</Link>
     </div>
   );
 };

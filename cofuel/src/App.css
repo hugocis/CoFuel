@@ -1,35 +1,100 @@
-/* src/App.css */
-body {
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
   font-family: Arial, sans-serif;
 }
 
-.home, .create-account, .login, .signup {
+.navbar {
+  width: 100%;
+  background: #b2ebf2; /* Fondo claro para el navbar */
+  overflow: hidden;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  height: 100vh;
-  background: linear-gradient(to bottom, #ffefba, #ffffff);
-  text-align: center;
+  padding: 10px 0;
+  position: fixed; /* Fijar el navbar en la parte superior */
+  top: 0;
+  z-index: 1000;
 }
 
-button {
+.nav-link {
+  color: #004d40;
+  padding: 14px 20px;
+  text-decoration: none;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.nav-link:hover {
+  background-color: #80deea; /* Color de hover más claro */
+  color: white;
+}
+
+.title {
+  font-size: 2rem;
+  color: black;
+}
+
+.title-green {
+  color: #4CAF50; /* Verde */
+}
+
+.button {
   background-color: #ffa500;
   color: white;
   padding: 10px 20px;
   border: none;
-  border-radius: 5px;
+  border-radius: 25px; /* Bordes redondeados más pronunciados */
+  margin: 20px;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #e65100; /* Color de hover para el botón */
+}
+
+.input {
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 25px; /* Bordes redondeados */
+  border: 1px solid #ccc;
+  width: 80%;
+  max-width: 300px;
+}
+
+.link {
+  color: #ffa500;
+  text-decoration: none;
+  margin-top: 10px;
+  display: block;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.form button {
   margin-top: 20px;
 }
 
-input {
-  padding: 10px;
-  margin: 10px 0;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+.background {
+  width: 150px;
+  margin: 20px 0;
+  opacity: 0.5; /* Transparencia de la imagen */
+  border-radius: 15px; /* Border radius para la imagen */
 }
 
-a {
-  text-decoration: none;
-  color: white;
+.footer {
+  width: 100%;
+  background-color: #b2ebf2;
+  text-align: center;
+  padding: 10px 0;
+  position: fixed;
+  bottom: 0;
+  z-index: 1000;
 }
