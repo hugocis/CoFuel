@@ -1,67 +1,66 @@
 import React, { useState } from 'react';
 import { supabase } from '../supabaseClient';
-import { Link } from 'react-router-dom';
+import { Container } from '../styles/GradientBackground';
 import '../App.css';
+import { v4 as uuidv4 } from 'uuid';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
-  const [lastName, setLastName] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState('');
-  const [rating, setRating] = useState('');
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    const id = uuidv4(); // Genera un ID único
     const { error } = await supabase.auth.signUp({
       email,
       password,
-    }, {
-      data: {
-        username,
-        last_name: lastName,
-        date_of_birth: dateOfBirth,
-        rating: rating ? parseFloat(rating) : null,
-      }
     });
+
     if (error) {
-      console.error('Error signing up:', error.message);
+      alert('Error signing up: ' + error.message);
     } else {
-      console.log('Signed up successfully');
+      const { error: insertError } = await supabase
+        .from('users')
+        .insert([{ id, email, username, date_of_birth: dateOfBirth }]);
+
+      if (insertError) {
+        alert('Error inserting user: ' + insertError.message);
+      } else {
+        alert('Signup successful');
+        window.location.href = '/';
+      }
     }
   };
 
   return (
-    <div className="container">
-      <div className="header">Signup</div>
-      <form className="form" onSubmit={handleSignup}>
+    <Container>
+      <h1>Signup</h1>
+      <form onSubmit={handleSignup} className="form">
         <input
           type="text"
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           className="input"
-        />
-        <input
-          type="text"
-          placeholder="Last name"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-          className="input"
+          required
         />
         <input
           type="email"
-          placeholder="Email"
+          placeholder="Type your email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="input"
+          required
         />
         <input
           type="password"
-          placeholder="Password"
+          placeholder="Type your password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="input"
+          required
         />
         <input
           type="date"
@@ -69,18 +68,12 @@ const Signup = () => {
           value={dateOfBirth}
           onChange={(e) => setDateOfBirth(e.target.value)}
           className="input"
+          required
         />
-        <input
-          type="text"
-          placeholder="Rating"
-          value={rating}
-          onChange={(e) => setRating(e.target.value)}
-          className="input"
-        />
-        <button type="submit" className="button">Sign up</button>
+        <button type="submit" className="button">Signup</button>
       </form>
-      <Link to="/login" className="link">Login</Link>
-    </div>
+      <a href="/login" className="link">Login</a>
+    </Container>
   );
 };
 

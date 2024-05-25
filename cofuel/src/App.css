@@ -7,7 +7,7 @@ body, html {
 
 .navbar {
   width: 100%;
-  background: #b2ebf2; /* Fondo claro para el navbar */
+  background: #2d6a4f; /* Verde oscuro */
   overflow: hidden;
   display: flex;
   justify-content: center;
@@ -18,7 +18,7 @@ body, html {
 }
 
 .nav-link {
-  color: #004d40;
+  color: white;
   padding: 14px 20px;
   text-decoration: none;
   text-align: center;
@@ -26,13 +26,25 @@ body, html {
 }
 
 .nav-link:hover {
-  background-color: #80deea; /* Color de hover más claro */
-  color: white;
+  background-color: #52b788; /* Color de hover más claro */
+  color: black;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  height: calc(100vh - 120px); /* Resta la altura del navbar y footer */
+  padding-top: 60px; /* Añadir espacio para el navbar */
+  padding-bottom: 60px; /* Añadir espacio para el footer */
+  color: black; /* Asegurar que el texto sea visible */
 }
 
 .title {
   font-size: 2rem;
-  color: black;
 }
 
 .title-green {
@@ -91,10 +103,30 @@ body, html {
 
 .footer {
   width: 100%;
-  background-color: #b2ebf2;
+  background-color: #2d6a4f; /* Verde oscuro */
   text-align: center;
   padding: 10px 0;
   position: fixed;
   bottom: 0;
   z-index: 1000;
 }
+
+.team {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.team-member {
+  text-align: center;
+}
+
+.member-photo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: #ddd;
+  margin-bottom: 10px;
+}
+

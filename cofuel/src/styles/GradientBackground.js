@@ -16,7 +16,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: linear-gradient(135deg, #2d8bbf, #f2a365);
+  background: linear-gradient(135deg, #00C9A7, #FFA17F);
   background-size: 200% 200%;
   animation: ${gradientBackground} 10s ease infinite;
   color: #ffffff;

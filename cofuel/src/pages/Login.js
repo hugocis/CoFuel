@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { supabase } from '../supabaseClient';
-import { Link } from 'react-router-dom';
+import { Container } from '../styles/GradientBackground';
 import '../App.css';
 
 const Login = () => {
@@ -10,14 +10,18 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     const { error } = await supabase.auth.signIn({ email, password });
-    if (error) console.error('Error logging in:', error.message);
-    else console.log('Logged in successfully');
+    if (error) {
+      alert('Error logging in');
+    } else {
+      alert('Login successful');
+      window.location.href = '/';
+    }
   };
 
   return (
-    <div className="container">
-      <div className="header">Login</div>
-      <form className="form" onSubmit={handleLogin}>
+    <Container>
+      <h1>Login</h1>
+      <form onSubmit={handleLogin} className="form">
         <input
           type="email"
           placeholder="Type your email"
@@ -34,8 +38,8 @@ const Login = () => {
         />
         <button type="submit" className="button">Login</button>
       </form>
-      <Link to="/signup" className="link">Signup</Link>
-    </div>
+      <a href="/signup" className="link">Signup</a>
+    </Container>
   );
 };
 
