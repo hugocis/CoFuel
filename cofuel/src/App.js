@@ -6,7 +6,7 @@ import InfoAboutProject from './pages/InfoAboutProject';
 import Links from './pages/Links';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
-// import Profile from './pages/Profile'; <Route path="/profile" element={<Profile />} />
+import Profile from './pages/UserPage';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import MapPage from './pages/MapPage'; 
@@ -25,6 +25,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/map" element={<MapPage />} /> 
+        <Route path="/profile" element={<Profile />} />
         <Route path="/test-connection" element={<TestConnection />} />
         <Route path="/test-map" element={<TestMap />} />
       </Routes>

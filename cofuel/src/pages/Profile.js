@@ -8,7 +8,7 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #2d8bbf, #f2a365);
+  background: linear-gradient(135deg, #66ffcc, #ffcc66);
   color: #fff;
   padding: 20px;
 `;

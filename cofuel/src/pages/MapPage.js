@@ -24,8 +24,8 @@ const MapPage = () => {
         title: "You are here",
       });
 
-      const autocompleteOrigin = new window.google.maps.places.Autocomplete(document.getElementById('origin'));
-      const autocompleteDestination = new window.google.maps.places.Autocomplete(document.getElementById('destination'));
+      new window.google.maps.places.Autocomplete(document.getElementById('origin'));
+      new window.google.maps.places.Autocomplete(document.getElementById('destination'));
 
       waypoints.forEach((waypoint) => {
         new window.google.maps.places.Autocomplete(document.getElementById(`waypoint-${waypoint.id}`));
@@ -169,12 +169,14 @@ const MapPage = () => {
           <InfoItem>
             <strong>Total Duration:</strong> {duration}
           </InfoItem>
-          <InfoItem>
-            <strong>Direct Distance (no stops):</strong> {directDistance}
-          </InfoItem>
-          <InfoItem>
-            <strong>Direct Duration (no stops):</strong> {directDuration}
-          </InfoItem>
+          <DirectInfoContainer>
+            <DirectInfoItem>
+              <strong>Direct Distance (no stops):</strong> {directDistance}
+            </DirectInfoItem>
+            <DirectInfoItem>
+              <strong>Direct Duration (no stops):</strong> {directDuration}
+            </DirectInfoItem>
+          </DirectInfoContainer>
         </InfoContainer>
       )}
     </Wrapper>
@@ -233,12 +235,11 @@ const MapContainer = styled.div`
 
 const InfoContainer = styled.div`
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
+  flex-direction: column;
+  align-items: center;
   width: 80%;
   background: rgba(255, 255, 255, 0.8);
   padding: 10px;
-  border-radius: 5px;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 `;
@@ -246,6 +247,7 @@ const InfoContainer = styled.div`
 const InfoItem = styled.div`
   flex: 1;
   text-align: center;
+  margin: 5px 0;
 `;
 
 const WaypointContainer = styled.div`
@@ -267,3 +269,16 @@ const RemoveButton = styled.button`
   }
 `;
 
+const DirectInfoContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  width: 80%;
+`;
+
+const DirectInfoItem = styled.div`
+  text-align: center;
+  margin: 5px 0;
+  flex: 1;
+`;

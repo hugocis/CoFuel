@@ -12,7 +12,6 @@ const gradientBackground = keyframes`
   100% { background-position: 0% 50%; }
 `;
 
-
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -22,58 +21,107 @@ const Container = styled.div`
   animation: ${gradientBackground} 10s ease infinite;
   min-height: 100vh;
   padding: 50px;
+  font-family: 'Arial', sans-serif;
+  color: #333;
 `;
 
 const Title = styled.h1`
   margin: 20px 0;
-  font-size: 2.5em;
+  font-size: 3em;
+  color: #444;
+`;
+
+const Subtitle = styled.h2`
+  margin: 20px 0;
+  font-size: 2em;
+  color: #555;
 `;
 
 const TeamContainer = styled.div`
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  max-width: 800px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 30px;
+  max-width: 1000px;
+  width: 100%;
 `;
 
 const Member = styled.div`
-  margin: 10px;
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
 `;
 
 const MemberImage = styled.img`
-  width: 150px;
-  height: 150px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   object-fit: cover;
+  margin-bottom: 10px;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+`;
+
+const MemberName = styled.p`
+  margin: 10px 0 5px;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #333;
+`;
+
+const MemberRole = styled.p`
+  margin: 0;
+  font-size: 1em;
+  color: #777;
+`;
+
+const AboutSection = styled.div`
+  max-width: 800px;
+  text-align: center;
+  margin: 40px 0;
+  padding: 0 20px;
 `;
 
 const MoreAboutUs = () => {
+  const members = [
+    { src: hugo, name: 'Hugo Cisneros', role: 'Software Engineer' },
+    { src: javier, name: 'Javier de Santos', role: 'Software Engineer' },
+    { src: alicia, name: 'Alicia García', role: 'Software Engineer' },
+    { src: estelle, name: 'Estelle Pamen', role: 'Software Engineer' },
+    { src: fernando, name: 'Fernando Teba', role: 'Software Engineer' },
+  ];
+
   return (
     <Container>
       <Title>More About Us</Title>
-      <TeamContainer>
-        <Member>
-          <MemberImage src={hugo} alt="Hugo Cisneros" />
-          <p>Hugo Cisneros</p>
-        </Member>
-        <Member>
-          <MemberImage src={javier} alt="Javier de Santos" />
-          <p>Javier de Santos</p>
-        </Member>
-        <Member>
-          <MemberImage src={alicia} alt="Alicia García" />
-          <p>Alicia García</p>
-        </Member>
-        <Member>
-          <MemberImage src={estelle} alt="Estelle Pamen" />
-          <p>Estelle Pamen</p>
-        </Member>
-        <Member>
-          <MemberImage src={fernando} alt="Fernando Teba" />
-          <p>Fernando Teba</p>
-        </Member>
-      </TeamContainer>
+      <AboutSection>
+        <Subtitle>Our Mission</Subtitle>
+        <p>
+          Our mission is to deliver exceptional solutions through a dedicated and passionate team.
+        </p>
+        <Subtitle>Our Team</Subtitle>
+        <TeamContainer>
+          {members.map((member, index) => (
+            <Member key={index}>
+              <MemberImage src={member.src} alt={member.name} />
+              <MemberName>{member.name}</MemberName>
+              <MemberRole>{member.role}</MemberRole>
+            </Member>
+          ))}
+        </TeamContainer>
+        <Subtitle>Contact Us</Subtitle>
+        <p>If you'd like to learn more about our team, please reach out to us at <a href="mailto:contact@ourcompany.com">contact@ourcompany.com</a>.</p>
+      </AboutSection>
     </Container>
   );
 };

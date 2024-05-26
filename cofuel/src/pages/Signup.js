@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import styled, { keyframes } from 'styled-components';
 
@@ -57,24 +58,35 @@ const Signup = () => {
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    const { error } = await supabase.auth.signUp({ email, password });
+    setError('');
 
-    if (error) {
-      alert('Error signing up');
-    } else {
-      // After the user is registered, insert additional user info into your custom table
-      const { error } = await supabase
+    try {
+      // Insertar los datos del nuevo usuario directamente en la tabla `user`
+      const { data, error: insertError } = await supabase
         .from('user')
-        .insert([{ id: supabase.auth.user().id, username, dateOfBirth, email }]);
+        .insert([{ email, password, username, dateOfBirth }])
+        .select('*'); // Retorna los datos insertados
 
-      if (error) {
-        alert('Error inserting user data');
-      } else {
-        alert('User registered successfully');
+      if (insertError) {
+        throw insertError;
       }
+
+      const newUser = data[0];
+
+      // Guardar los datos del usuario en localStorage
+      localStorage.setItem('user', JSON.stringify(newUser));
+
+      alert('User registered successfully');
+
+      // Redirigir al usuario a la página del mapa
+      navigate('/map');
+    } catch (error) {
+      setError(error.message || 'Error signing up');
     }
   };
 
@@ -82,6 +94,7 @@ const Signup = () => {
     <Container>
       <Title>Sign Up</Title>
       <Form onSubmit={handleSignup}>
+        {error && <div style={{ color: 'red', marginBottom: '10px' }}>{error}</div>}
         <Input
           type="text"
           placeholder="Username"

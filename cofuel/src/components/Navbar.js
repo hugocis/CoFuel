@@ -1,89 +1,205 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { supabase } from '../supabaseClient';
+import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
+import { FaHome, FaInfoCircle, FaLink, FaUser, FaSignInAlt, FaUserPlus, FaSignOutAlt } from 'react-icons/fa';
+import { slide as Menu } from 'react-burger-menu';
+import { useMediaQuery } from 'react-responsive';
+import logo from '../assets/logo.png';
+import './Navbar.css';
 
 const Nav = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
-  background: rgba(0, 128, 0, 0.8); /* Verde con opacidad */
+  padding: ${({ isScrolled }) => (isScrolled ? '0.5rem 1rem' : '1rem 2rem')};
+  background: ${({ isScrolled }) => (isScrolled ? 'rgba(0, 100, 0, 0.8)' : '#006400')};
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
   z-index: 1000;
+  transition: padding 0.3s, font-size 0.3s, background 0.3s;
+  font-size: ${({ isScrolled }) => (isScrolled ? '0.9rem' : '1rem')};
+`;
+
+const NavLinks = styled.div`
+  display: flex;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const NavLink = styled(Link)`
   color: white;
   text-decoration: none;
   margin: 0 1rem;
+  display: flex;
+  align-items: center;
+  font-family: 'Roboto', sans-serif;
 
   &:hover {
     color: #ffcc66;
     border-radius: 5px;
   }
+
+  &.active {
+    border-bottom: 2px solid #ffcc66;
+  }
+
+  svg {
+    margin-right: 0.5rem;
+  }
 `;
 
-const Logo = styled.div`
-  font-family: 'Lobster', cursive; /* Usa la fuente personalizada */
-  font-size: 2rem; /* Aumenta el tamaño del texto */
+const LogoContainer = styled.div`
+  display: flex;
+  align-items: center;
+  font-family: 'Lobster', cursive;
+  font-size: 2rem;
   color: white;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Agrega sombra al texto */
-  transition: transform 0.3s ease, color 0.3s ease; /* Agrega una transición para animaciones */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, color 0.3s ease;
 
   &:hover {
-    transform: scale(1.1); /* Aumenta el tamaño al pasar el cursor */
-    color: #ffcc66; /* Cambia el color al pasar el cursor */
+    transform: scale(1.1);
+    color: #ffcc66;
+  }
+
+  img {
+    width: 40px;
+    height: auto;
+    margin-right: 10px;
+    border-radius: 50%;
+  }
+`;
+
+const Button = styled.button`
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  margin: 0 1rem;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    color: #ffcc66;
+  }
+
+  svg {
+    margin-right: 0.5rem;
+  }
+`;
+
+const BurgerMenu = styled.div`
+  @media (min-width: 769px) {
+    display: none;
   }
 `;
 
 const Navbar = () => {
   const [user, setUser] = useState(null);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const location = useLocation();
+  const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
   useEffect(() => {
-    const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user ?? null);
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
     };
 
-    getSession();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-
+    window.addEventListener('scroll', handleScroll);
     return () => {
-      if (subscription) {
-        subscription.unsubscribe();
-      }
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
+  useEffect(() => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
     setUser(null);
   };
 
   return (
-    <Nav>
-      <div>
-        <NavLink to="/">Home</NavLink>
-        <NavLink to="/more-about-us">More About Us</NavLink>
-        <NavLink to="/info-about-project">Info About the Project</NavLink>
-        <NavLink to="/links">Links</NavLink>
-      </div>
-      <Logo>CoFuel</Logo>
+    <Nav isScrolled={isScrolled}>
+      <LogoContainer>
+        <img src={logo} alt="CoFuel Logo" />
+        CoFuel
+      </LogoContainer>
+      {!isMobile && (
+        <NavLinks>
+          <NavLink to="/" className={location.pathname === '/' ? 'active' : ''}>
+            <FaHome />
+            Home
+          </NavLink>
+          <NavLink to="/more-about-us" className={location.pathname === '/more-about-us' ? 'active' : ''}>
+            <FaInfoCircle />
+            More About Us
+          </NavLink>
+          <NavLink to="/info-about-project" className={location.pathname === '/info-about-project' ? 'active' : ''}>
+            <FaInfoCircle />
+            Info About the Project
+          </NavLink>
+          <NavLink to="/links" className={location.pathname === '/links' ? 'active' : ''}>
+            <FaLink />
+            Links
+          </NavLink>
+        </NavLinks>
+      )}
+      <BurgerMenu>
+        <Menu right>
+          <NavLink to="/" className={location.pathname === '/' ? 'active' : ''}>
+            <FaHome />
+            Home
+          </NavLink>
+          <NavLink to="/more-about-us" className={location.pathname === '/more-about-us' ? 'active' : ''}>
+            <FaInfoCircle />
+            More About Us
+          </NavLink>
+          <NavLink to="/info-about-project" className={location.pathname === '/info-about-project' ? 'active' : ''}>
+            <FaInfoCircle />
+            Info About the Project
+          </NavLink>
+          <NavLink to="/links" className={location.pathname === '/links' ? 'active' : ''}>
+            <FaLink />
+            Links
+          </NavLink>
+        </Menu>
+      </BurgerMenu>
       <div>
         {user ? (
           <>
-            <NavLink to="/profile">Profile</NavLink>
-            <NavLink as="button" onClick={handleLogout}>Logout</NavLink>
+            <NavLink to="/profile" className={location.pathname === '/profile' ? 'active' : ''}>
+              <FaUser />
+              {user.username}  {/* Mostrar el nombre de usuario */}
+            </NavLink>
+            <Button onClick={handleLogout}>
+              <FaSignOutAlt />
+              Logout
+            </Button>
           </>
         ) : (
           <>
-            <NavLink to="/login">Login</NavLink>
-            <NavLink to="/signup">Sign Up</NavLink>
+            <NavLink to="/login" className={location.pathname === '/login' ? 'active' : ''}>
+              <FaSignInAlt />
+              Login
+            </NavLink>
+            <NavLink to="/signup" className={location.pathname === '/signup' ? 'active' : ''}>
+              <FaUserPlus />
+              Sign Up
+            </NavLink>
           </>
         )}
       </div>
