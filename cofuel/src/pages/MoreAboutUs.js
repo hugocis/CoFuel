@@ -1,18 +1,27 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import hugo from '../assets/teamMembers/hugo.jpg';
 import javier from '../assets/teamMembers/javier.jpg';
 import alicia from '../assets/teamMembers/alicia.jpg';
 import estelle from '../assets/teamMembers/estelle.jpg';
 import fernando from '../assets/teamMembers/fernando.jpg';
 
+const gradientBackground = keyframes`
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+`;
+
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
-  padding: 20px;
   background: linear-gradient(135deg, #66ffcc, #ffcc66);
+  background-size: 200% 200%;
+  animation: ${gradientBackground} 10s ease infinite;
+  min-height: 100vh;
+  padding: 50px;
 `;
 
 const Title = styled.h1`

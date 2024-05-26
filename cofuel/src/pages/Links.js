@@ -14,11 +14,8 @@ const LinksContainer = styled.div`
   background: linear-gradient(135deg, #66ffcc, #ffcc66);
   background-size: 200% 200%;
   animation: ${gradientBackground} 10s ease infinite;
-  color: #ffffff;
   min-height: 100vh;
-  padding: 20px;
-  position: relative;
-  overflow: hidden;
+  padding: 50px;
 `;
 
 const Title = styled.h1`

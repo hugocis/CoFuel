@@ -14,10 +14,8 @@ const AboutContainer = styled.div`
   background: linear-gradient(135deg, #66ffcc, #ffcc66);
   background-size: 200% 200%;
   animation: ${gradientBackground} 10s ease infinite;
-  padding: 50px;
-  color: #333;
   min-height: 100vh;
-  position: relative;
+  padding: 50px;
 `;
 
 const Section = styled.section`

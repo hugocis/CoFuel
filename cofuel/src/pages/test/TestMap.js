@@ -6,10 +6,7 @@ const MapContainer = styled.div`
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: linear-gradient(135deg, #66ffcc, #ffcc66);
-  background-size: 200% 200%;
-  animation: gradientBackground 10s ease infinite;
-  padding-top: 60px; /* Ajusta el padding-top aquí para reducir el espacio con respecto al navbar */
+  background-color: #f0f0f0; /* Fondo gris claro */
 `;
 
 const MapWrapper = styled.div`
@@ -57,7 +54,7 @@ const MapPage = () => {
 
     if (!window.google || !window.google.maps) {
       const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyC_LtP0pEQY_Bd1CMcQSPAa8tm67P4bkDE`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBTrtlFqyMH3HAUewO9Q3ZpNpSb69DG4JQ`;
       script.async = true;
       script.defer = true;
       script.onload = handleScriptLoad;

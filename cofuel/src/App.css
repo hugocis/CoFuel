@@ -141,14 +141,56 @@ body, html {
   margin-bottom: 10px;
 }
 
-.navbar {
-  background-color: #004d00; /* Cambia este color al que prefieras */
+/* Estilo del footer */
+footer {
+  background-color: #FF9800; /* Naranja más potente */
   color: white;
-  padding: 10px 20px;
+  text-align: center;
+  padding: 10px 0;
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+}
+
+/* Estilo del navbar */
+nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 1rem 2rem;
+  background: rgba(0, 128, 0, 0.8); /* Verde con opacidad */
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
+
+nav a {
+  color: white;
+  text-decoration: none;
+  margin: 0 1rem;
+  transition: color 0.3s ease;
+}
+
+nav a:hover {
+  color: #ffcc66;
+  border-radius: 5px;
+}
+
+/* Estilo del título del navbar */
+nav .logo {
+  font-family: 'Lobster', cursive; /* Usa la fuente personalizada */
+  font-size: 2rem; /* Aumenta el tamaño del texto */
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Agrega sombra al texto */
+  transition: transform 0.3s ease, color 0.3s ease; /* Agrega una transición para animaciones */
+}
+
+nav .logo:hover {
+  transform: scale(1.1); /* Aumenta el tamaño al pasar el cursor */
+  color: #ffcc66; /* Cambia el color al pasar el cursor */
+}
+
+
 
 .navbar .nav-link {
   color: white;
@@ -172,4 +214,30 @@ body, html {
   bottom: 0;
 }
 
+button {
+  padding: 10px 20px;
+  background-color: #ffcc66;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
 
+button:hover {
+  background-color: #ffaa00;
+  transform: scale(1.05);
+}
+
+
+@keyframes gradientBackground {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

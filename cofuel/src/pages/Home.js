@@ -44,7 +44,7 @@ const Home = () => {
   return (
     <HomeContainer>
       <Title>Where Every Trip Counts</Title>
-      <Button>Create an account</Button>
+      <Button to="/signup">Create an account</Button>
     </HomeContainer>
   );
 };

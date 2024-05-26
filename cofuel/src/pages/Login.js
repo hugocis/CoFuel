@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+
+const gradientBackground = keyframes`
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+`;
 
 const Container = styled.div`
   display: flex;
@@ -9,12 +15,9 @@ const Container = styled.div`
   align-items: center;
   background: linear-gradient(135deg, #66ffcc, #ffcc66);
   background-size: 200% 200%;
-  animation: gradientBackground 10s ease infinite;
-  color: #ffffff;
+  animation: ${gradientBackground} 10s ease infinite;
   min-height: 100vh;
-  padding: 20px;
-  position: relative;
-  overflow: hidden;
+  padding: 50px;
 `;
 
 const Title = styled.h1`
@@ -55,8 +58,9 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     const { error } = await supabase.auth.signInWithPassword({ email, password });
+
     if (error) {
-      alert('Error logging in');
+      alert(`Error logging in: ${error.message}`);
     } else {
       navigate('/map');
     }

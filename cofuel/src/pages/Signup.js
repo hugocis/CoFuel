@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+
+const gradientBackground = keyframes`
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+`;
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: linear-gradient(135deg, #2d8bbf, #f2a365);
+  background: linear-gradient(135deg, #66ffcc, #ffcc66);
   background-size: 200% 200%;
-  animation: gradientBackground 10s ease infinite;
+  animation: ${gradientBackground} 10s ease infinite;
   color: #ffffff;
   min-height: 100vh;
   padding: 20px;
@@ -52,22 +57,24 @@ const Signup = () => {
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState('');
-  const navigate = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { username, dateOfBirth },
-      },
-    });
+    const { error } = await supabase.auth.signUp({ email, password });
 
     if (error) {
       alert('Error signing up');
     } else {
-      navigate('/map');
+      // After the user is registered, insert additional user info into your custom table
+      const { error } = await supabase
+        .from('user')
+        .insert([{ id: supabase.auth.user().id, username, dateOfBirth, email }]);
+
+      if (error) {
+        alert('Error inserting user data');
+      } else {
+        alert('User registered successfully');
+      }
     }
   };
 
@@ -75,18 +82,6 @@ const Signup = () => {
     <Container>
       <Title>Sign Up</Title>
       <Form onSubmit={handleSignup}>
-        <Input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <Input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
         <Input
           type="text"
           placeholder="Username"
@@ -98,6 +93,18 @@ const Signup = () => {
           placeholder="Date of Birth"
           value={dateOfBirth}
           onChange={(e) => setDateOfBirth(e.target.value)}
+        />
+        <Input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <Input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
         <Button type="submit">Sign Up</Button>
       </Form>
