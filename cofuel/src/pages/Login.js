@@ -124,6 +124,7 @@ const Login = () => {
     if (error || !data) {
       setError('Error logging in: Invalid login credentials');
     } else {
+      localStorage.setItem('user', JSON.stringify(data)); // Guardar el usuario en localStorage
       navigate('/map');
     }
   };

@@ -183,7 +183,7 @@ const Navbar = () => {
           <>
             <NavLink to="/profile" className={location.pathname === '/profile' ? 'active' : ''}>
               <FaUser />
-              {user.username}  {/* Mostrar el nombre de usuario */}
+              {user.username}  {/* Display the username */}
             </NavLink>
             <Button onClick={handleLogout}>
               <FaSignOutAlt />
