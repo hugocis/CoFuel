@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaUserPlus } from 'react-icons/fa';
 
 const gradientBackground = keyframes`
@@ -78,6 +78,16 @@ const BackgroundImage = styled.div`
 `;
 
 const Home = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const user = localStorage.getItem('user');
+
+    if (user) {
+      navigate('/map');
+    }
+  }, [navigate]);
+
   return (
     <HomeContainer>
       <BackgroundImage />

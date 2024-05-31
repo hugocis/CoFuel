@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { FaHome, FaInfoCircle, FaLink, FaUser, FaSignInAlt, FaUserPlus, FaSignOutAlt } from 'react-icons/fa';
+import { FaHome, FaMap, FaInfoCircle, FaLink, FaUser, FaSignInAlt, FaUserPlus, FaSignOutAlt } from 'react-icons/fa';
 import { slide as Menu } from 'react-burger-menu';
 import { useMediaQuery } from 'react-responsive';
 import logo from '../assets/logo.png';
@@ -102,7 +102,9 @@ const BurgerMenu = styled.div`
 const Navbar = () => {
   const [user, setUser] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [hasCheckedUser, setHasCheckedUser] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
   useEffect(() => {
@@ -124,12 +126,19 @@ const Navbar = () => {
     const userData = localStorage.getItem('user');
     if (userData) {
       setUser(JSON.parse(userData));
+      if (!hasCheckedUser) {
+        setHasCheckedUser(true);
+        navigate('/map');
+      }
+    } else {
+      setHasCheckedUser(true);
     }
-  }, []);
+  }, [navigate, hasCheckedUser]);
 
   const handleLogout = () => {
     localStorage.removeItem('user');
     setUser(null);
+    navigate('/'); // Redirect to home page after logout
   };
 
   return (
@@ -140,10 +149,17 @@ const Navbar = () => {
       </LogoContainer>
       {!isMobile && (
         <NavLinks>
-          <NavLink to="/" className={location.pathname === '/' ? 'active' : ''}>
-            <FaHome />
-            Home
-          </NavLink>
+          {user ? (
+            <NavLink to="/map" className={location.pathname === '/map' ? 'active' : ''}>
+              <FaMap />
+              Map
+            </NavLink>
+          ) : (
+            <NavLink to="/" className={location.pathname === '/' ? 'active' : ''}>
+              <FaHome />
+              Home
+            </NavLink>
+          )}
           <NavLink to="/more-about-us" className={location.pathname === '/more-about-us' ? 'active' : ''}>
             <FaInfoCircle />
             More About Us
@@ -160,10 +176,17 @@ const Navbar = () => {
       )}
       <BurgerMenu>
         <Menu right>
-          <NavLink to="/" className={location.pathname === '/' ? 'active' : ''}>
-            <FaHome />
-            Home
-          </NavLink>
+          {user ? (
+            <NavLink to="/map" className={location.pathname === '/map' ? 'active' : ''}>
+              <FaMap />
+              Map
+            </NavLink>
+          ) : (
+            <NavLink to="/" className={location.pathname === '/' ? 'active' : ''}>
+              <FaHome />
+              Home
+            </NavLink>
+          )}
           <NavLink to="/more-about-us" className={location.pathname === '/more-about-us' ? 'active' : ''}>
             <FaInfoCircle />
             More About Us
@@ -183,7 +206,7 @@ const Navbar = () => {
           <>
             <NavLink to="/profile" className={location.pathname === '/profile' ? 'active' : ''}>
               <FaUser />
-              {user.username}  {/* Display the username */}
+              {user.username}
             </NavLink>
             <Button onClick={handleLogout}>
               <FaSignOutAlt />

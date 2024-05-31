@@ -12,6 +12,8 @@ import Footer from './components/Footer';
 import MapPage from './pages/MapPage'; 
 import TestMap from './pages/test/TestMap';
 import TestConnection from './pages/test/TestConnection';
+import PhotoUploadTest from './pages/PhotoUploadTest';
+import VehicleRegistrationTest from './pages/VehicleRegistrationTest';
 
 function App() {
   return (
@@ -28,6 +30,8 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/test-connection" element={<TestConnection />} />
         <Route path="/test-map" element={<TestMap />} />
+        <Route path="/test-photo-upload" element={<PhotoUploadTest />} />
+        <Route path="/test-vehicle-registration" element={<VehicleRegistrationTest />} />
       </Routes>
       <Footer />
     </Router>

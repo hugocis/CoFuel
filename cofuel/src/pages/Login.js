@@ -95,7 +95,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const navigate = useNavigate();
+  useNavigate();
 
   const validateEmail = (email) => {
     return /\S+@\S+\.\S+/.test(email);
@@ -104,7 +104,7 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
-    
+
     if (!validateEmail(email)) {
       setError('Please enter a valid email address.');
       return;
@@ -125,7 +125,7 @@ const Login = () => {
       setError('Error logging in: Invalid login credentials');
     } else {
       localStorage.setItem('user', JSON.stringify(data)); // Guardar el usuario en localStorage
-      navigate('/map');
+      window.location.reload(); // Recargar la página
     }
   };
 
