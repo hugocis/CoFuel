@@ -95,10 +95,23 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  useNavigate();
+  const navigate = useNavigate();
 
   const validateEmail = (email) => {
     return /\S+@\S+\.\S+/.test(email);
+  };
+
+  const updateUserLocation = async (latitude, longitude, userId) => {
+    const { data, error } = await supabase
+      .from('user')
+      .update({ latitude, longitude })
+      .eq('id', userId);
+
+    if (error) {
+      console.error('Error updating user location:', error);
+    } else {
+      console.log('User location updated:', data);
+    }
   };
 
   const handleLogin = async (e) => {
@@ -124,8 +137,25 @@ const Login = () => {
     if (error || !data) {
       setError('Error logging in: Invalid login credentials');
     } else {
-      localStorage.setItem('user', JSON.stringify(data)); // Guardar el usuario en localStorage
-      window.location.reload(); // Recargar la página
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const { latitude, longitude } = position.coords;
+            await updateUserLocation(latitude, longitude, data.id);
+            localStorage.setItem('user', JSON.stringify(data)); // Guardar el usuario en localStorage
+            navigate('/map'); // Redirigir a la página del mapa
+          },
+          (error) => {
+            console.error('Error getting location:', error);
+            localStorage.setItem('user', JSON.stringify(data)); // Guardar el usuario en localStorage
+            navigate('/map'); // Redirigir a la página del mapa
+          }
+        );
+      } else {
+        console.error('Geolocation is not supported by this browser.');
+        localStorage.setItem('user', JSON.stringify(data)); // Guardar el usuario en localStorage
+        navigate('/map'); // Redirigir a la página del mapa
+      }
     }
   };
 

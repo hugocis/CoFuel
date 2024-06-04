@@ -24,8 +24,7 @@ const PhotoUploadTest = () => {
       return;
     }
 
-    const { publicURL, error: urlError } = supabase
-      .storage
+    const { publicURL, error: urlError } = supabase.storage
       .from('avatars')
       .getPublicUrl(filePath);
 

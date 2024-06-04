@@ -111,7 +111,8 @@ const UserPage = () => {
   const [email, setEmail] = useState('');
   const [avatar, setAvatar] = useState('');
   const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState('');
+  const [profileMessage, setProfileMessage] = useState('');
+  const [vehicleMessage, setVehicleMessage] = useState('');
   const [vehicles, setVehicles] = useState([]);
   const [newVehicle, setNewVehicle] = useState({
     id_vehicle: '',
@@ -138,6 +139,7 @@ const UserPage = () => {
           setEmail(data.email);
           setAvatar(data.avatar_url);
 
+          // Fetch user vehicles
           const { data: userVehicles, error: vehicleError } = await supabase
             .from('vehicle')
             .select('*')
@@ -149,7 +151,7 @@ const UserPage = () => {
             setVehicles(userVehicles);
           }
         } else {
-          setMessage(error.message);
+          setProfileMessage(error.message);
         }
       }
       setLoading(false);
@@ -169,33 +171,45 @@ const UserPage = () => {
   const handleVehicleImageUpload = async (e) => {
     const file = e.target.files[0];
     const fileExt = file.name.split('.').pop();
-    const fileName = `${user.id}_${newVehicle.id_vehicle}.${fileExt}`;
+    const fileName = `${user ? user.id : 'anonymous'}_${newVehicle.id_vehicle}.${fileExt}`;
     const filePath = `vehicle_images/${fileName}`;
 
+    console.log("Deleting existing file if it exists...");
     // Delete existing file if it exists
-    let { error: deleteError } = await supabase.storage
+    const { error: deleteError } = await supabase.storage
       .from('vehicle_images')
       .remove([filePath]);
 
+    if (deleteError && deleteError.message !== 'The resource was not found') {
+      console.error('Error deleting existing file:', deleteError.message);
+      return;
+    }
+
+    console.log("Uploading new file...");
     // Upload new file
-    let { error: uploadError } = await supabase.storage
+    const { error: uploadError } = await supabase.storage
       .from('vehicle_images')
       .upload(filePath, file);
 
     if (uploadError) {
-      setMessage(uploadError.message);
+      setVehicleMessage(uploadError.message);
       return;
     }
 
-    const { publicURL, error: urlError } = supabase
+    console.log("Getting public URL of the uploaded file...");
+    // Get public URL of the uploaded file
+    const { data: publicURLData, error: urlError } = await supabase
       .storage
       .from('vehicle_images')
       .getPublicUrl(filePath);
 
     if (urlError) {
-      setMessage(urlError.message);
+      setVehicleMessage(urlError.message);
       return;
     }
+
+    const publicURL = publicURLData.publicUrl;
+    console.log("Public URL:", publicURL);
 
     setNewVehicle((prevVehicle) => ({
       ...prevVehicle,
@@ -206,14 +220,27 @@ const UserPage = () => {
   const handleAddVehicle = async (e) => {
     e.preventDefault();
 
+    const id_user = user ? user.id : 'anonymous';
+
     const { error } = await supabase
       .from('vehicle')
-      .insert([{ ...newVehicle, id_user: user.id }]);
+      .insert([{ ...newVehicle, id_user }]);
 
     if (error) {
-      setMessage(`Error adding vehicle: ${error.message}`);
+      setVehicleMessage(`Error adding vehicle: ${error.message}`);
     } else {
-      setVehicles((prevVehicles) => [...prevVehicles, { ...newVehicle, id_user: user.id }]);
+      // Recargar los vehículos después de agregar uno nuevo
+      const { data: userVehicles, error: vehicleError } = await supabase
+        .from('vehicle')
+        .select('*')
+        .eq('id_user', id_user);
+
+      if (vehicleError) {
+        console.error('Error fetching vehicles:', vehicleError);
+      } else {
+        setVehicles(userVehicles);
+      }
+
       setNewVehicle({
         id_vehicle: '',
         seats: '',
@@ -222,11 +249,11 @@ const UserPage = () => {
         colour: '',
         vehicle_image_url: '',
       });
-      setMessage('Vehicle added successfully!');
+      setVehicleMessage('Vehicle added successfully!');
     }
   };
 
-  const handleUpdate = async (e) => {
+  const handleProfileUpdate = async (e) => {
     e.preventDefault();
     setLoading(true);
 
@@ -239,13 +266,14 @@ const UserPage = () => {
       .select('*');
 
     if (error) {
-      setMessage(`Error updating profile: ${error.message}`);
+      setProfileMessage(`Error updating profile: ${error.message}`);
     } else if (data && data.length > 0) {
-      setUser(data[0]);
-      localStorage.setItem('user', JSON.stringify(data[0]));
-      setMessage('Profile updated successfully!');
+      const updatedUser = data[0];
+      setUser(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      setProfileMessage('Profile updated successfully!');
     } else {
-      setMessage('No user data returned');
+      setProfileMessage('No user data returned');
     }
     setLoading(false);
   };
@@ -257,32 +285,73 @@ const UserPage = () => {
     const fileName = `${storedUser.id}.${fileExt}`;
     const filePath = `avatars/${fileName}`;
 
+    console.log("Stored User ID:", storedUser.id);
+    console.log("Current avatar_url:", storedUser.avatar_url);
+
     // Delete existing file if it exists
-    let { error: deleteError } = await supabase.storage
+    const { error: deleteError } = await supabase.storage
       .from('avatars')
       .remove([filePath]);
 
+    if (deleteError && deleteError.message !== 'The resource was not found') {
+      console.error('Error deleting existing file:', deleteError.message);
+    } else {
+      console.log("Existing file deleted or not found, continuing with upload...");
+    }
+
+    console.log("Uploading new file...");
     // Upload new file
-    let { error: uploadError } = await supabase.storage
+    const { error: uploadError } = await supabase.storage
       .from('avatars')
       .upload(filePath, file);
 
     if (uploadError) {
-      setMessage(uploadError.message);
+      setProfileMessage(uploadError.message);
+      console.error('Error uploading new file:', uploadError.message);
       return;
     }
 
-    const { publicURL, error: urlError } = supabase
+    console.log("Getting public URL of the uploaded file...");
+    // Get public URL of the uploaded file
+    const { data: publicURLData, error: urlError } = await supabase
       .storage
       .from('avatars')
       .getPublicUrl(filePath);
 
     if (urlError) {
-      setMessage(urlError.message);
+      setProfileMessage(urlError.message);
+      console.error('Error getting public URL:', urlError.message);
       return;
     }
 
-    setAvatar(publicURL);
+    const publicURL = publicURLData.publicUrl;
+    console.log("Public URL:", publicURL);
+
+    console.log("Updating user profile with new avatar URL...");
+    // Update user profile with new avatar URL using update
+    const { data: updateData, error: updateError } = await supabase
+      .from('user')
+      .update({ avatar_url: publicURL })
+      .eq('id', storedUser.id)
+      .select('*'); // Ensure we fetch the updated data
+
+    if (updateError) {
+      console.error('Error updating profile:', updateError.message);
+      setProfileMessage(`Error updating profile: ${updateError.message}`);
+      return;
+    }
+
+    if (updateData && updateData.length > 0) {
+      const updatedUser = updateData[0];
+      console.log("Updated user data:", updatedUser);
+      setUser(updatedUser);
+      setAvatar(publicURL); // Update the avatar state with the new URL
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      setProfileMessage('Profile updated successfully!');
+    } else {
+      console.log("No user data returned after update");
+      setProfileMessage('No user data returned');
+    }
   };
 
   return (
@@ -297,7 +366,7 @@ const UserPage = () => {
             <UserInfo><strong>Username:</strong> {user.username}</UserInfo>
             <UserInfo><strong>Email:</strong> {user.email}</UserInfo>
           </ProfileCard>
-          <Form onSubmit={handleUpdate}>
+          <Form onSubmit={handleProfileUpdate}>
             <Title>Update Profile</Title>
             <Input
               type="text"
@@ -316,7 +385,7 @@ const UserPage = () => {
               onChange={handleAvatarUpload}
             />
             <Button type="submit">Update</Button>
-            {message && <Message error={message.includes('Error')}>{message}</Message>}
+            {profileMessage && <Message error={profileMessage.includes('Error')}>{profileMessage}</Message>}
           </Form>
           <Form onSubmit={handleAddVehicle}>
             <Title>Add Vehicle</Title>
@@ -367,7 +436,7 @@ const UserPage = () => {
               onChange={handleVehicleImageUpload}
             />
             <Button type="submit">Add Vehicle</Button>
-            {message && <Message error={message.includes('Error')}>{message}</Message>}
+            {vehicleMessage && <Message error={vehicleMessage.includes('Error')}>{vehicleMessage}</Message>}
           </Form>
           <div>
             <Title>Your Vehicles</Title>
