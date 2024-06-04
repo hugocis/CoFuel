@@ -13,11 +13,11 @@ const Nav = styled.nav`
   align-items: center;
   padding: ${({ isScrolled }) => (isScrolled ? '0.5rem 1rem' : '1rem 2rem')};
   background: ${({ isScrolled }) => (isScrolled ? 'rgba(0, 100, 0, 0.8)' : '#006400')};
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: ${({ isScrolled }) => (isScrolled ? '0 4px 8px rgba(0, 0, 0, 0.3)' : 'none')};
   position: sticky;
   top: 0;
   z-index: 1000;
-  transition: padding 0.3s, font-size 0.3s, background 0.3s;
+  transition: padding 0.3s, background 0.3s, box-shadow 0.3s;
   font-size: ${({ isScrolled }) => (isScrolled ? '0.9rem' : '1rem')};
 `;
 
@@ -37,10 +37,11 @@ const NavLink = styled(Link)`
   display: flex;
   align-items: center;
   font-family: 'Roboto', sans-serif;
+  transition: color 0.3s, border-bottom 0.3s;
 
   &:hover {
     color: #ffcc66;
-    border-radius: 5px;
+    border-bottom: 2px solid #ffcc66;
   }
 
   &.active {
@@ -59,7 +60,7 @@ const LogoContainer = styled.div`
   font-size: 2rem;
   color: white;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  transition: transform 0.3s ease, color 0.3s ease;
+  transition: transform 0.3s, color 0.3s;
 
   &:hover {
     transform: scale(1.1);
@@ -83,6 +84,7 @@ const Button = styled.button`
   font-size: 1rem;
   display: flex;
   align-items: center;
+  transition: color 0.3s;
 
   &:hover {
     color: #ffcc66;

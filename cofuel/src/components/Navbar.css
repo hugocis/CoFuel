@@ -1,54 +1,59 @@
 /* Override react-burger-menu default styles */
 .bm-burger-button {
-    position: relative;
-    width: 36px;
-    height: 30px;
+  position: relative;
+  width: 36px;
+  height: 30px;
+}
+
+.bm-burger-bars {
+  background: white;
+}
+
+.bm-burger-bars-hover {
+  background: #ffcc66;
+}
+
+.bm-cross-button {
+  height: 24px;
+  width: 24px;
+}
+
+.bm-cross {
+  background: white;
+}
+
+.bm-menu-wrap {
+  position: fixed;
+  height: 100%;
+}
+
+.bm-menu {
+  background: #006400;
+  padding: 2.5em 1.5em 0;
+  font-size: 1.15em;
+}
+
+.bm-morph-shape {
+  fill: #006400;
+}
+
+.bm-item-list {
+  color: white;
+  padding: 0.8em;
+}
+
+.bm-item {
+  display: inline-block;
+  text-decoration: none;
+  margin: 0.5em 0;
+  color: white;
+  transition: color 0.3s;
+
+  &:hover {
+    color: #ffcc66;
   }
-  
-  .bm-burger-bars {
-    background: white;
-  }
-  
-  .bm-burger-bars-hover {
-    background: #ffcc66;
-  }
-  
-  .bm-cross-button {
-    height: 24px;
-    width: 24px;
-  }
-  
-  .bm-cross {
-    background: white;
-  }
-  
-  .bm-menu-wrap {
-    position: fixed;
-    height: 100%;
-  }
-  
-  .bm-menu {
-    background: #a3d9a5;
-    padding: 2.5em 1.5em 0;
-    font-size: 1.15em;
-  }
-  
-  .bm-morph-shape {
-    fill: #a3d9a5;
-  }
-  
-  .bm-item-list {
-    color: #fff;
-    padding: 0.8em;
-  }
-  
-  .bm-item {
-    display: inline-block;
-    text-decoration: none;
-    margin: 0.5em 0;
-  }
-  
-  .bm-overlay {
-    background: rgba(0, 0, 0, 0.3);
-  }
-  
+}
+
+.bm-overlay {
+  background: rgba(0, 0, 0, 0.3);
+}

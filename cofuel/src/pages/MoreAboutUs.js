@@ -90,6 +90,21 @@ const AboutSection = styled.div`
   text-align: center;
   margin: 40px 0;
   padding: 0 20px;
+
+  p {
+    font-size: 1.1em;
+    line-height: 1.5;
+    color: #555;
+  }
+
+  a {
+    color: #0066cc;
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 `;
 
 const MoreAboutUs = () => {
