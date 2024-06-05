@@ -28,7 +28,7 @@
 }
 
 .bm-menu {
-  background: #006400;
+  background: linear-gradient(90deg, #006400, #228B22);
   padding: 2.5em 1.5em 0;
   font-size: 1.15em;
 }

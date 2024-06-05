@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
-import { supabase } from '../supabaseClient';
+import { supabase, addFriend, acceptFriend, removeFriend, fetchFriends } from '../supabaseClient';
 import Spinner from '../components/Spinner';
 
 const gradientBackground = keyframes`
@@ -105,6 +105,16 @@ const VehicleInfo = styled.div`
   text-align: center;
 `;
 
+const FriendsList = styled.div`
+  background: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 10px;
+  width: 350px;
+  text-align: center;
+`;
+
 const UserPage = () => {
   const [user, setUser] = useState(null);
   const [username, setUsername] = useState('');
@@ -113,6 +123,9 @@ const UserPage = () => {
   const [loading, setLoading] = useState(true);
   const [profileMessage, setProfileMessage] = useState('');
   const [vehicleMessage, setVehicleMessage] = useState('');
+  const [friends, setFriends] = useState([]);
+  const [newFriendEmail, setNewFriendEmail] = useState('');
+  const [friendMessage, setFriendMessage] = useState('');
   const [vehicles, setVehicles] = useState([]);
   const [newVehicle, setNewVehicle] = useState({
     id_vehicle: '',
@@ -150,6 +163,10 @@ const UserPage = () => {
           } else {
             setVehicles(userVehicles);
           }
+
+          // Fetch user friends
+          const friendsData = await fetchFriends(data.id);
+          setFriends(friendsData);
         } else {
           setProfileMessage(error.message);
         }
@@ -174,7 +191,6 @@ const UserPage = () => {
     const fileName = `${user ? user.id : 'anonymous'}_${newVehicle.id_vehicle}.${fileExt}`;
     const filePath = `vehicle_images/${fileName}`;
 
-    console.log("Deleting existing file if it exists...");
     // Delete existing file if it exists
     const { error: deleteError } = await supabase.storage
       .from('vehicle_images')
@@ -185,7 +201,6 @@ const UserPage = () => {
       return;
     }
 
-    console.log("Uploading new file...");
     // Upload new file
     const { error: uploadError } = await supabase.storage
       .from('vehicle_images')
@@ -196,7 +211,6 @@ const UserPage = () => {
       return;
     }
 
-    console.log("Getting public URL of the uploaded file...");
     // Get public URL of the uploaded file
     const { data: publicURLData, error: urlError } = await supabase
       .storage
@@ -209,7 +223,6 @@ const UserPage = () => {
     }
 
     const publicURL = publicURLData.publicUrl;
-    console.log("Public URL:", publicURL);
 
     setNewVehicle((prevVehicle) => ({
       ...prevVehicle,
@@ -285,9 +298,6 @@ const UserPage = () => {
     const fileName = `${storedUser.id}.${fileExt}`;
     const filePath = `avatars/${fileName}`;
 
-    console.log("Stored User ID:", storedUser.id);
-    console.log("Current avatar_url:", storedUser.avatar_url);
-
     // Delete existing file if it exists
     const { error: deleteError } = await supabase.storage
       .from('avatars')
@@ -295,11 +305,8 @@ const UserPage = () => {
 
     if (deleteError && deleteError.message !== 'The resource was not found') {
       console.error('Error deleting existing file:', deleteError.message);
-    } else {
-      console.log("Existing file deleted or not found, continuing with upload...");
     }
 
-    console.log("Uploading new file...");
     // Upload new file
     const { error: uploadError } = await supabase.storage
       .from('avatars')
@@ -307,11 +314,9 @@ const UserPage = () => {
 
     if (uploadError) {
       setProfileMessage(uploadError.message);
-      console.error('Error uploading new file:', uploadError.message);
       return;
     }
 
-    console.log("Getting public URL of the uploaded file...");
     // Get public URL of the uploaded file
     const { data: publicURLData, error: urlError } = await supabase
       .storage
@@ -320,37 +325,81 @@ const UserPage = () => {
 
     if (urlError) {
       setProfileMessage(urlError.message);
-      console.error('Error getting public URL:', urlError.message);
       return;
     }
 
     const publicURL = publicURLData.publicUrl;
-    console.log("Public URL:", publicURL);
 
-    console.log("Updating user profile with new avatar URL...");
-    // Update user profile with new avatar URL using update
+    // Update user profile with new avatar URL
     const { data: updateData, error: updateError } = await supabase
       .from('user')
       .update({ avatar_url: publicURL })
       .eq('id', storedUser.id)
-      .select('*'); // Ensure we fetch the updated data
+      .select('*');
 
     if (updateError) {
-      console.error('Error updating profile:', updateError.message);
       setProfileMessage(`Error updating profile: ${updateError.message}`);
       return;
     }
 
     if (updateData && updateData.length > 0) {
       const updatedUser = updateData[0];
-      console.log("Updated user data:", updatedUser);
       setUser(updatedUser);
-      setAvatar(publicURL); // Update the avatar state with the new URL
+      setAvatar(publicURL);
       localStorage.setItem('user', JSON.stringify(updatedUser));
       setProfileMessage('Profile updated successfully!');
     } else {
-      console.log("No user data returned after update");
       setProfileMessage('No user data returned');
+    }
+  };
+
+  const handleAddFriend = async (e) => {
+    e.preventDefault();
+    const { data, error } = await supabase
+      .from('user')
+      .select('id')
+      .eq('email', newFriendEmail)
+      .single();
+
+    if (error) {
+      setFriendMessage(`Error finding user: ${error.message}`);
+      return;
+    }
+
+    if (data) {
+      const friendId = data.id;
+      const result = await addFriend(user.id, friendId);
+      if (result) {
+        setFriendMessage('Friend request sent!');
+      } else {
+        setFriendMessage('Error sending friend request.');
+      }
+    } else {
+      setFriendMessage('User not found.');
+    }
+  };
+
+  const handleAcceptFriend = async (friendId) => {
+    const result = await acceptFriend(user.id, friendId);
+    if (result) {
+      setFriends((prevFriends) =>
+        prevFriends.map((friend) =>
+          friend.friend_id === friendId ? { ...friend, status: 'accepted' } : friend
+        )
+      );
+    } else {
+      setFriendMessage('Error accepting friend request.');
+    }
+  };
+
+  const handleRemoveFriend = async (friendId) => {
+    const result = await removeFriend(user.id, friendId);
+    if (result) {
+      setFriends((prevFriends) =>
+        prevFriends.filter((friend) => friend.friend_id !== friendId)
+      );
+    } else {
+      setFriendMessage('Error removing friend.');
     }
   };
 
@@ -438,6 +487,33 @@ const UserPage = () => {
             <Button type="submit">Add Vehicle</Button>
             {vehicleMessage && <Message error={vehicleMessage.includes('Error')}>{vehicleMessage}</Message>}
           </Form>
+          <Form onSubmit={handleAddFriend}>
+            <Title>Add Friend</Title>
+            <Input
+              type="email"
+              placeholder="Friend's Email"
+              value={newFriendEmail}
+              onChange={(e) => setNewFriendEmail(e.target.value)}
+            />
+            <Button type="submit">Add Friend</Button>
+            {friendMessage && <Message error={friendMessage.includes('Error')}>{friendMessage}</Message>}
+          </Form>
+          <FriendsList>
+            <Title>Friends</Title>
+            {friends.length > 0 ? (
+              friends.map((friend) => (
+                <div key={friend.id}>
+                  <p>{friend.friend_id}</p>
+                  {friend.status === 'pending' && (
+                    <Button onClick={() => handleAcceptFriend(friend.friend_id)}>Accept</Button>
+                  )}
+                  <Button onClick={() => handleRemoveFriend(friend.friend_id)}>Remove</Button>
+                </div>
+              ))
+            ) : (
+              <p>No friends found</p>
+            )}
+          </FriendsList>
           <div>
             <Title>Your Vehicles</Title>
             {vehicles.length > 0 ? (

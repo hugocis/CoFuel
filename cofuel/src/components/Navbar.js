@@ -12,7 +12,7 @@ const Nav = styled.nav`
   justify-content: space-between;
   align-items: center;
   padding: ${({ isScrolled }) => (isScrolled ? '0.5rem 1rem' : '1rem 2rem')};
-  background: ${({ isScrolled }) => (isScrolled ? 'rgba(0, 100, 0, 0.8)' : '#006400')};
+  background: ${({ isScrolled }) => (isScrolled ? 'rgba(0, 100, 0, 0.8)' : 'linear-gradient(90deg, #006400, #228B22)')};
   box-shadow: ${({ isScrolled }) => (isScrolled ? '0 4px 8px rgba(0, 0, 0, 0.3)' : 'none')};
   position: sticky;
   top: 0;
